@@ -17,4 +17,12 @@ main {
 
 div {
     border: 1px solid black
+    
+}
+
+div > img {
+    display: block;
+    height: 2.6em;
+    width: 2.6em;
+    margin: auto
 }
