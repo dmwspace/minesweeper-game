@@ -10,7 +10,7 @@ const tilesArr = [
     {"8": {mine: false, flag: false, isRevealed: false, adjacentTiles: [7, 9, 17, 18, 19]}},
     {"9": {mine: false, flag: false, isRevealed: false, adjacentTiles: [8, 18, 19]}},
     {"10": {mine: false, flag: false, isRevealed: false, adjacentTiles: [0, 1, 11, 20, 21]}},
-    {"11": {mine: false, flag: false, isRevealed: false, adjacentTiles: [0, 1, 10, 12, 20, 21, 22]}},
+    {"11": {mine: false, flag: false, isRevealed: false, adjacentTiles: [0, 1, 2, 10, 12, 20, 21, 22]}},
     {"12": {mine: false, flag: false, isRevealed: false, adjacentTiles: [1, 2, 3, 11, 13, 21, 22, 23]}},
     {"13": {mine: false, flag: false, isRevealed: false, adjacentTiles: [2, 3, 4, 12, 14, 22, 23, 24]}},
     {"14": {mine: false, flag: false, isRevealed: false, adjacentTiles: [3, 4, 5, 13, 15, 23, 24, 25]}},
@@ -121,7 +121,8 @@ document.querySelector('main').addEventListener('contextmenu', (e) => {
 
 document.querySelector('main').addEventListener('click', (e) => {
     e.preventDefault()
-    console.log(tilesArr[e.target.id][e.target.id])
+
+    //console.log(tilesArr[e.target.id][e.target.id])
 
     if (e.target.localName === "div" || e.target.localName === "img") {
 
@@ -141,28 +142,63 @@ document.querySelector('main').addEventListener('click', (e) => {
             let adjacentTileMineCount = 0;
 
             for (let tile of adjacentTiles) {
-                console.log(tilesArr[tile][tile].mine)
+
+                //console.log(tilesArr[tile][tile].mine)
+
                 if (tilesArr[tile][tile].mine === true) {
                     adjacentTileMineCount += 1;
                 }
             }
             if (adjacentTileMineCount > 0) {
                 document.getElementById(e.target.id).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${e.target.id}>`
+                return
                 console.log(adjacentTileMineCount)
                 console.log('There are mines adjacent to this tile')
-            } else {   
+
+            } else {
+                let currentId = Object.keys(tilesArr[e.target.id])[0];
+                //console.log(`the id of the clicked tile is: ${currentId}`)
+                //console.log(tilesArr[currentId[0]][currentId[0]].mine)
+                let mineValue = (tilesArr[currentId[0]][currentId[0]].mine);
+                console.log(mineValue)
+                setInterval(() => {
+                    if (!mineValue) {
+                        if (currentId > 0 && !(currentId % 10 === 0)) {
+                            const newId = parseInt(currentId) - 1;
+                            currentId = Object.keys(tilesArr[newId])
+                            mineValue = tilesArr[currentId[0]][currentId[0]].mine
+                            console.log(currentId[0])
+
+                            if (mineValue) {} else {
+                                let adjacentTiles = tilesArr[currentId[0]][currentId[0]].adjacentTiles
+                                let adjacentTileMineCount = 0;
+                                for (let tile of adjacentTiles) {
+                                    if (tilesArr[tile][tile].mine === true) {
+                                        adjacentTileMineCount += 1;
+                                    }
+                                    if (adjacentTileMineCount > 0) {
+                                        console.log(tilesArr[currentId[0]][currentId[0]].adjacentTiles)
+                                        document.getElementById(currentId).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${e.target.id}>`
+                                    } else {}
+                                }                                
+                            }
+
+                            // if (![currentId][0]) {
+                            //     console.log('The next square is a mine')
+                            // } else {
+                            //     console.log(tilesArr[currentId[0]][currentId[0]].mine)
+                            //     console.log(newId)
+                            // }
+                        }
+                    }
+                }, 20)
             }        
         } else {
-            //console.log(tilesArr[e.target.id])
-            //let chosenTile  = (Object.keys(tilesArr)[e.target.id])
-            //chosenTile.adjacentTiles
-            //console.log(chosenTile[e.target.id][e.target.id]) 
-            //console.log(tilesArr[chosenTile][chosenTile].mine)
-            //console.log(`The chosen tile, ${chosenTile} is next to at least one mine`)
+
         }
     }
-
 })
+
 function endGame() {
     for (let item of tilesArr) {
 
@@ -171,6 +207,7 @@ function endGame() {
         if (item[key].flag) {}
 
         else if (item[key].mine) {
+
             document.getElementById(key).innerHTML = `<img src=./imgs/mine.png id=${key}>`
             console.log(key)
 
@@ -193,31 +230,30 @@ function endGame() {
 
     }
 }
-function render() {
+function initialize() {
 
     minesArr = [];
 
     while (minesArr.length < 12) {
+
         let randBombTile
+
         function getrandBombTile() {
             randBombTile = Math.floor(Math.random() * tilesArr.length)
             return randBombTile
         }
-
         getrandBombTile()
 
         if (!minesArr.includes(randBombTile)) {
             minesArr.push(randBombTile)
         } 
     }  
+
     minesArr.forEach(mine => {
         tilesArr[mine][mine].mine = true
     })
-
-
-  
     console.log(minesArr)
-
 }
-render()
+
+initialize()
     
