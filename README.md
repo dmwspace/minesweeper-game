@@ -25,15 +25,15 @@ Screenshots
 
 A win:
 
-<img src="https://github.com/dmwspace/minesweeper-game/blob/main/imgs/win.png>
+<img src="https://github.com/dmwspace/minesweeper-game/blob/main/imgs/win.png">
 
 A loss:
 
-<img src="https://github.com/dmwspace/minesweeper-game/blob/main/imgs/loss.png>
+<img src="https://github.com/dmwspace/minesweeper-game/blob/main/imgs/loss.png">
 
 The flood feature:
 
-<img src="https://github.com/dmwspace/minesweeper-game/blob/main/imgs/flood.png>
+<img src="https://github.com/dmwspace/minesweeper-game/blob/main/imgs/flood.png">
 
 
 Technologies Used:
