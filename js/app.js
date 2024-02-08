@@ -226,10 +226,8 @@ function endGameLoss() {
                     adjacentTileMineCount ++
                 }
             }
-            if (adjacentTileMineCount === 0) {
-                document.getElementById(key).innerHTML = `<img src=./imgs/blank.jpeg id=${key}>`
-
-            } else {
+            
+            if (adjacentTileMineCount > 0) {
                 document.getElementById(key).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png>`
             }
         }
