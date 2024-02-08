@@ -114,10 +114,11 @@ document.querySelector('main').addEventListener('contextmenu', (e) => {
             tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
 
             if (tilesArr[e.target.id][e.target.id].flag === true) {
-
                 document.getElementById(e.target.id).innerHTML = `<img src=${flagImgPath} id=${e.target.id}>`
+
             } else {
                 document.getElementById(e.target.id).innerHTML = `<ing src=${blankImgPath} id=${e.target.id}`
+            
             }
             checkForWin()
         } 
@@ -138,6 +139,7 @@ document.querySelector('main').addEventListener('click', (e) => {
             endGameLoss()
 
         } else if (tilesArr[e.target.id][e.target.id].mine === false) {
+
             tilesArr[e.target.id][e.target.id].isRevealed = true
             let adjacentTiles = tilesArr[e.target.id][e.target.id].adjacentTiles
             let adjacentTileMineCount = 0;
@@ -148,6 +150,7 @@ document.querySelector('main').addEventListener('click', (e) => {
                     adjacentTileMineCount += 1;
                 }
             }
+
             if (adjacentTileMineCount > 0) {
 
                 document.getElementById(e.target.id).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${e.target.id}>`
@@ -180,30 +183,27 @@ document.querySelector('main').addEventListener('click', (e) => {
             if (!tilesArr[item][item].isRevealed) {
 
                 adjacentTiles = tilesArr[item][item].adjacentTiles
-                
                 adjacentTileMineCount = 0;
-                    for (let tile of adjacentTiles) {
-                        
-                        if (tilesArr[tile][tile].mine) {
-                            adjacentTileMineCount ++
-                        }
+
+                for (let tile of adjacentTiles) {
+                    
+                    if (tilesArr[tile][tile].mine) {
+                        adjacentTileMineCount ++
                     }
-                        if (adjacentTileMineCount > 0) {
-
-                            document.getElementById(item).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${item}>`
-                            
-                            tilesArr[item][item].isRevealed = true
-                            
-                        } else {
-                            document.getElementById(item).style.backgroundColor = '#EADFF8'
-
-                            tilesArr[item][item].isRevealed = true
-                                                    
-                            floodFill(item)
-                        }
+                }
+                if (adjacentTileMineCount > 0) {
+                    document.getElementById(item).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${item}>`
+                    tilesArr[item][item].isRevealed = true
+                    
+                } else {
+                    document.getElementById(item).style.backgroundColor = '#EADFF8'
+                    tilesArr[item][item].isRevealed = true                       
+                    floodFill(item)
                 }
             }
         }
+    }
+
 function endGameLoss() {
 
     for (let item of tilesArr) {
@@ -219,25 +219,20 @@ function endGameLoss() {
         } else if (!item[key].flag || !item[key].mine) {
 
             let adjacentTiles = item[key].adjacentTiles
-
             let adjacentTileMineCount = 0;
 
             for (let tile of adjacentTiles) {
-
                 if (tilesArr[tile][tile].mine === true) {
                     adjacentTileMineCount ++
                 }
             }
             if (adjacentTileMineCount === 0) {
-
                 document.getElementById(key).innerHTML = `<img src=./imgs/blank.jpeg id=${key}>`
 
             } else {
-
                 document.getElementById(key).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png>`
             }
         }
-
     }
     document.getElementById("message").innerText = "You lose"
 }
@@ -250,13 +245,13 @@ function initialize() {
     minesArr = [];
 
     while (minesArr.length < 12) {
-
         let randBombTile
 
         function getrandBombTile() {
             randBombTile = Math.floor(Math.random() * tilesArr.length)
             return randBombTile
         }
+
         getrandBombTile()
 
         if (!minesArr.includes(randBombTile)) {
@@ -270,6 +265,7 @@ function initialize() {
         
     })
 }
+
 function checkForWin() {
 
     let winArr = [];
@@ -278,10 +274,10 @@ function checkForWin() {
         if (tilesArr[mine][mine].mine === tilesArr[mine][mine].flag) {
             winArr.push(true)
         
-        } 
+        }
+
         if (winArr.length === minesArr.length) {
             endGameWin()
-        
         }
     })
 }
