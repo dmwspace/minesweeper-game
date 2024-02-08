@@ -4,7 +4,7 @@
 
 body {
     width: 500px;
-    height: 500px;
+    height: 600px;
 }
 
 main {
@@ -13,6 +13,19 @@ main {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; 
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+footer {
+    height: 100px;
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+}
+
+footer > div {
+    background-color: #EADFF8;
+    display: flex;
+    font-size: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
 div {
@@ -25,4 +38,11 @@ div > img {
     height: 2.6em;
     width: 2.6em;
     margin: auto
+}
+
+#message {
+    display: flex;
+    font-size: 40px;
+    align-items: center;
+    justify-content: center;
 }

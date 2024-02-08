@@ -102,35 +102,32 @@ const tilesArr = [
 ];
 
 let minesArr = [];
-let board = [];
-let poolsArr = [];
 
 document.querySelector('main').addEventListener('contextmenu', (e) => {
     e.preventDefault()
-
-    if (e.target.localName === "div" || e.target.localName === "img") {
-        tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
-        tilesArr[e.target.id][e.target.id].isRevealed = true
-        if (tilesArr[e.target.id][e.target.id].flag === true) {
-            const flagImgPath = './imgs/flag.png';
-            document.getElementById(e.target.id).innerHTML = `<img src=${flagImgPath} id=${e.target.id}>`
-        } else {
-            const blankImgPath = './imgs/blank.jpeg'
-            document.getElementById(e.target.id).innerHTML = `<img src=${blankImgPath} id=${e.target.id}>`
-        }
-        checkForWin()
-    } else {}
-    })
+    //console.log(e)
+    if (!tilesArr[e.target.id][e.target.id].isRevealed) {
+        if (e.target.localName === "div" || e.target.localName === "img") {
+            tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
+            console.log(tilesArr[e.target.id][e.target.id].flag)
+            // tilesArr[e.target.id][e.target.id].isRevealed = true
+            if (tilesArr[e.target.id][e.target.id].flag === true) {
+                const flagImgPath = './imgs/flag.png';
+                document.getElementById(e.target.id).innerHTML = `<img src=${flagImgPath} id=${e.target.id}>`
+            } 
+            checkForWin()
+        } 
+    }
+})
 
 document.querySelector('main').addEventListener('click', (e) => {
     e.preventDefault()
 
     if (e.target.localName === "div" || e.target.localName === "img") {
 
-        if (tilesArr[e.target.id][e.target.id].flag === true) {
-            console.log('You hit a flag')
+        if (tilesArr[e.target.id][e.target.id].flag === true) {}
 
-        } else if (tilesArr[e.target.id][e.target.id].mine === true) {
+        else if (tilesArr[e.target.id][e.target.id].mine === true) {
 
             document.getElementById(e.target.id).innerHTML = `<img src=./imgs/explosion.jpeg id=${e.target.id}>`
 
@@ -138,7 +135,6 @@ document.querySelector('main').addEventListener('click', (e) => {
 
         } else if (tilesArr[e.target.id][e.target.id].mine === false) {
             tilesArr[e.target.id][e.target.id].isRevealed = true
-            //console.log(e.target.id, tilesArr[e.target.id][e.target.id].isRevealed)
             let adjacentTiles = tilesArr[e.target.id][e.target.id].adjacentTiles
             let adjacentTileMineCount = 0;
 
@@ -159,43 +155,47 @@ document.querySelector('main').addEventListener('click', (e) => {
                 let mineValue = (tilesArr[currentId[0]][currentId[0]].mine);
 
                 floodFill(currentId)
-                
 
             }
         }}
+    })
+
+    document.querySelector('#restart-game').addEventListener('click', (e) => {
+        e.preventDefault()
+        window.location.reload()
+        initialize()
     })
 
 
     function floodFill(id) {
         tilesArr[id][id].isRevealed = true
         document.getElementById(id).style.backgroundColor = '#EADFF8'
-        console.log(`id: ${id}`)
+        
         for (let item of tilesArr[id][id].adjacentTiles) {
-            console.log(tilesArr[id][id].adjacentTiles)
-            console.log(`item before: ${item}`)
+
             if (!tilesArr[item][item].isRevealed) {
-                console.log(`item: ${item}`)
+
                 adjacentTiles = tilesArr[item][item].adjacentTiles
-                console.log(adjacentTiles)
+                
                 adjacentTileMineCount = 0;
                     for (let tile of adjacentTiles) {
                         
-                        // if (tilesArr[tile][tile].isRevealed){return}
                         if (tilesArr[tile][tile].mine) {
                             adjacentTileMineCount ++
                         }
                     }
-                    console.log(`mine count: ${adjacentTileMineCount}`)
+                    
                         if (adjacentTileMineCount > 0) {
+
                             document.getElementById(item).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${item}>`
+                            
                             tilesArr[item][item].isRevealed = true
-                            console.log(`item is not passed to floodFill: ${item}`)
                             
                         } else {
                             document.getElementById(item).style.backgroundColor = '#EADFF8'
+
                             tilesArr[item][item].isRevealed = true
-                            console.log(`item is passed to floodFill: ${item}, ${adjacentTileMineCount}`)
-                        
+                                                    
                             floodFill(item)
                         }
                 }
@@ -205,6 +205,7 @@ document.querySelector('main').addEventListener('click', (e) => {
         
 
 function endGameLoss() {
+
     for (let item of tilesArr) {
 
         const key = Object.keys(item)[0];
@@ -218,30 +219,32 @@ function endGameLoss() {
         } else if (!item[key].flag || !item[key].mine) {
 
             let adjacentTiles = item[key].adjacentTiles
+
             let adjacentTileMineCount = 0;
 
             for (let tile of adjacentTiles) {
+
                 if (tilesArr[tile][tile].mine === true) {
                     adjacentTileMineCount ++
+
                 }
             }
             if (adjacentTileMineCount === 0) {
+
                 document.getElementById(key).innerHTML = `<img src=./imgs/blank.jpeg id=${key}>`
+
             } else {
+
                 document.getElementById(key).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png>`
             }
         }
 
     }
-    const footer = document.createElement("p");
-    footer.innerText = "You lose!"
-    document.body.appendChild(footer);
+    document.getElementById("message").innerText = "You lose"
 }
 
 function endGameWin() {
-    const footer = document.createElement("p");
-    footer.innerText = "You win!"
-    document.body.appendChild(footer);
+    document.getElementById("message").innerText = "You win!"    
 }
 function initialize() {
 
@@ -265,19 +268,21 @@ function initialize() {
 
     minesArr.forEach(mine => {
         tilesArr[mine][mine].mine = true
-        tilesArr[mine][mine].isRevealed = true
+        
     })
-    console.log(minesArr)
 }
 function checkForWin() {
+
     let winArr = [];
+
     minesArr.forEach(mine => {
-        console.log(`flag: ${tilesArr[mine][mine].flag}`)
         if (tilesArr[mine][mine].mine === tilesArr[mine][mine].flag) {
             winArr.push(true)
-        } else {}
+        
+        } 
         if (winArr.length === minesArr.length) {
             endGameWin()
+        
         }
     })
 }
