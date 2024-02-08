@@ -34,6 +34,10 @@ The flood feature:
 
 <img src="./imgs/flood.png>
 
+Technologies used:
+
+HTML, CSS, and Javascript were used to create this game.
+
 Getting started
 
 Instructions are in the introduction.
