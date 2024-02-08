@@ -122,8 +122,6 @@ document.querySelector('main').addEventListener('contextmenu', (e) => {
 document.querySelector('main').addEventListener('click', (e) => {
     e.preventDefault()
 
-    //console.log(tilesArr[e.target.id][e.target.id])
-
     if (e.target.localName === "div" || e.target.localName === "img") {
 
         if (tilesArr[e.target.id][e.target.id].flag === true) {
@@ -132,72 +130,148 @@ document.querySelector('main').addEventListener('click', (e) => {
         } else if (tilesArr[e.target.id][e.target.id].mine === true) {
 
             document.getElementById(e.target.id).innerHTML = `<img src=./imgs/explosion.jpeg id=${e.target.id}>`
-            console.log('You hit a mine. The game is over')
+
             endGame()
 
         } else if (tilesArr[e.target.id][e.target.id].mine === false) {
-
-            console.log('There is no mine here')
+            
             let adjacentTiles = tilesArr[e.target.id][e.target.id].adjacentTiles
             let adjacentTileMineCount = 0;
 
             for (let tile of adjacentTiles) {
-
-                //console.log(tilesArr[tile][tile].mine)
 
                 if (tilesArr[tile][tile].mine === true) {
                     adjacentTileMineCount += 1;
                 }
             }
             if (adjacentTileMineCount > 0) {
+
                 document.getElementById(e.target.id).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${e.target.id}>`
                 return
-                console.log(adjacentTileMineCount)
-                console.log('There are mines adjacent to this tile')
 
             } else {
                 let currentId = Object.keys(tilesArr[e.target.id])[0];
-                //console.log(`the id of the clicked tile is: ${currentId}`)
-                //console.log(tilesArr[currentId[0]][currentId[0]].mine)
+
                 let mineValue = (tilesArr[currentId[0]][currentId[0]].mine);
-                console.log(mineValue)
-                setInterval(() => {
-                    if (!mineValue) {
-                        if (currentId > 0 && !(currentId % 10 === 0)) {
-                            const newId = parseInt(currentId) - 1;
-                            currentId = Object.keys(tilesArr[newId])
-                            mineValue = tilesArr[currentId[0]][currentId[0]].mine
-                            console.log(currentId[0])
 
-                            if (mineValue) {} else {
-                                let adjacentTiles = tilesArr[currentId[0]][currentId[0]].adjacentTiles
-                                let adjacentTileMineCount = 0;
-                                for (let tile of adjacentTiles) {
-                                    if (tilesArr[tile][tile].mine === true) {
-                                        adjacentTileMineCount += 1;
-                                    }
-                                    if (adjacentTileMineCount > 0) {
-                                        console.log(tilesArr[currentId[0]][currentId[0]].adjacentTiles)
-                                        document.getElementById(currentId).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${e.target.id}>`
-                                    } else {}
-                                }                                
-                            }
+                checkFlood(currentId)
 
-                            // if (![currentId][0]) {
-                            //     console.log('The next square is a mine')
-                            // } else {
-                            //     console.log(tilesArr[currentId[0]][currentId[0]].mine)
-                            //     console.log(newId)
-                            // }
-                        }
-                    }
-                }, 20)
-            }        
-        } else {
-
+            }
         }
     }
 })
+function checkFlood(currentIndex) {
+    console.log(`index clicked: ${currentIndex}`)
+    checkAdjacentTilesLeft(currentIndex)
+    checkAdjacentTilesRight(currentIndex)
+    // checkAdjacentTilesUp(currentIndex)
+    // checkAdjacentTilesDown(currentIndex)
+}
+    function checkAdjacentTilesLeft(currentIndex) {
+        //if (currentIndex[0] === '-') {return}
+        const currentNum = parseInt(currentIndex);
+        if (currentNum > 0 && !(currentNum % 10 === 0)){
+            console.log(`left: ${currentNum}`)
+            const leftSquare = (currentNum);
+            adjacentTiles = tilesArr[leftSquare][leftSquare].adjacentTiles
+            adjacentTileMineCount = 0;
+                for (let tile of adjacentTiles) {
+                    if (tilesArr[tile][tile].mine) {
+                        adjacentTileMineCount ++
+                    }
+                }
+                //console.log(`left mine count ${adjacentTileMineCount}`)
+                console.log(`current num: ${currentNum} adjacent mine count: ${adjacentTileMineCount}`)
+                if (adjacentTileMineCount > 0) {
+                    document.getElementById(leftSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${leftSquare}>`
+                    return
+                }
+                checkAdjacentTilesLeft(currentNum - 1)
+                checkAdjacentTilesUp(currentNum - 10)
+                checkAdjacentTilesDown(currentNum + 10)
+        }
+    }
+    function checkAdjacentTilesRight(currentIndex) {
+        //if (currentIndex[0] === '-') {return}
+        const currentNum = parseInt(currentIndex);
+        if (currentNum !== 9 && !(currentNum % 10 === 9)) {
+            console.log(`right: ${currentNum}`)
+            const rightSquare = currentNum;
+            adjacentTiles = tilesArr[rightSquare][rightSquare].adjacentTiles
+            adjacentTileMineCount = 0;
+                for (let tile of adjacentTiles) {
+                    if (tilesArr[tile][tile].mine) {
+                        adjacentTileMineCount ++
+                    }
+                }
+                //console.log(`right mine count ${adjacentTileMineCount}`)
+                if (adjacentTileMineCount > 0) {
+                    document.getElementById(rightSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${rightSquare}>` 
+                    // checkAdjacentTilesUp(currentNum - 10)
+                    // checkAdjacentTilesDown(currentNum + 10)
+                    return
+                }
+                checkAdjacentTilesRight(currentNum + 1)
+                checkAdjacentTilesUp(currentNum - 10)
+                checkAdjacentTilesDown(currentNum + 10)
+        }
+    }
+    function checkAdjacentTilesUp(currentIndex) {
+       // if (currentIndex[0] === '-') {return}
+        const currentNum = parseInt(currentIndex);
+        if (currentNum > 9 && currentNum <= 100) {
+            console.log(`up: ${currentNum}`)
+            const upSquare = currentNum;
+            adjacentTiles = tilesArr[upSquare][upSquare].adjacentTiles
+            adjacentTileMineCount = 0;
+                for (let tile of adjacentTiles) {
+                    if (tilesArr[tile][tile].mine) {
+                        adjacentTileMineCount ++
+                    }
+                }
+                console.log(`up num ${currentNum}`)
+                if (adjacentTileMineCount > 0) {
+                    document.getElementById(upSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${upSquare}>`
+                    // checkAdjacentTilesRight(currentNum + 1)
+                    // checkAdjacentTilesLeft(currentNum - 1)
+                    return
+                }
+                checkAdjacentTilesUp(currentNum - 10)
+                // checkAdjacentTilesRight(currentNum + 1)
+                // checkAdjacentTilesLeft(currentNum - 1)
+        }
+    }
+    function checkAdjacentTilesDown(currentIndex) {
+        //if (currentIndex[0] === '-') {return}
+
+        const currentNum = parseInt(currentIndex);
+        if (currentNum <= 89 && currentNum >= 0) {
+            console.log(`down: ${currentIndex}`)
+            const downSquare = currentNum;
+            //console.log(`down square: ${downSquare}`)
+            
+            adjacentTiles = tilesArr[downSquare][downSquare].adjacentTiles
+            adjacentTileMineCount = 0;
+                for (let tile of adjacentTiles) {
+                    if (tilesArr[tile][tile].mine) {
+                        adjacentTileMineCount ++
+                    }
+                }
+                console.log(`down mine count ${adjacentTileMineCount}`)
+                if (adjacentTileMineCount > 0) {
+                    document.getElementById(downSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${downSquare}>`
+                    // checkAdjacentTilesLeft(currentNum - 1)
+                    // checkAdjacentTilesRight(currentNum + 1)
+                    return
+                }
+                checkAdjacentTilesDown(currentNum + 10)
+                // checkAdjacentTilesLeft(currentNum - 1)
+                // checkAdjacentTilesRight(currentNum + 1)
+        }
+    }
+
+
+
 
 function endGame() {
     for (let item of tilesArr) {
@@ -209,7 +283,6 @@ function endGame() {
         else if (item[key].mine) {
 
             document.getElementById(key).innerHTML = `<img src=./imgs/mine.png id=${key}>`
-            console.log(key)
 
         } else if (!item[key].flag || !item[key].mine) {
 
@@ -234,7 +307,7 @@ function initialize() {
 
     minesArr = [];
 
-    while (minesArr.length < 12) {
+    while (minesArr.length < 10) {
 
         let randBombTile
 
