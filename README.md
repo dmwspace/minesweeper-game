@@ -44,6 +44,8 @@ HTML, CSS, and Javascript were used to create this game.
 ### Getting Started
 
 Instructions are in the introduction.
+The game is located at:
+<a href="https://dmwspace.github.io/minesweeper-game/">Here</a>
 
 
 ### Next Steps
