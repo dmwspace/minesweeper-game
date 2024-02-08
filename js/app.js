@@ -20,7 +20,7 @@ const tilesArr = [
     {"18": {mine: false, flag: false, isRevealed: false, adjacentTiles: [7, 8, 9, 17, 19, 27, 28, 29]}},
     {"19": {mine: false, flag: false, isRevealed: false, adjacentTiles: [8, 9, 18, 28, 29]}},
     {"20": {mine: false, flag: false, isRevealed: false, adjacentTiles: [10, 11, 21, 30, 31]}},
-    {"21": {mine: false, flag: false, isRevealed: false, adjacentTiles: [10, 11, 12, 20, 22, 20, 31, 32]}},
+    {"21": {mine: false, flag: false, isRevealed: false, adjacentTiles: [10, 11, 12, 20, 22, 30, 31, 32]}},
     {"22": {mine: false, flag: false, isRevealed: false, adjacentTiles: [11, 12, 13, 21, 23, 31, 32, 33]}},
     {"23": {mine: false, flag: false, isRevealed: false, adjacentTiles: [12, 13, 14, 22, 24, 32, 33, 34]}},
     {"24": {mine: false, flag: false, isRevealed: false, adjacentTiles: [13, 14, 15, 23, 25, 33, 34, 35]}},
@@ -107,15 +107,18 @@ let poolsArr = [];
 
 document.querySelector('main').addEventListener('contextmenu', (e) => {
     e.preventDefault()
-    tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
+
     if (e.target.localName === "div" || e.target.localName === "img") {
+        tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
+        tilesArr[e.target.id][e.target.id].isRevealed = true
         if (tilesArr[e.target.id][e.target.id].flag === true) {
             const flagImgPath = './imgs/flag.png';
             document.getElementById(e.target.id).innerHTML = `<img src=${flagImgPath} id=${e.target.id}>`
         } else {
             const blankImgPath = './imgs/blank.jpeg'
             document.getElementById(e.target.id).innerHTML = `<img src=${blankImgPath} id=${e.target.id}>`
-        } 
+        }
+        checkForWin()
     } else {}
     })
 
@@ -131,10 +134,11 @@ document.querySelector('main').addEventListener('click', (e) => {
 
             document.getElementById(e.target.id).innerHTML = `<img src=./imgs/explosion.jpeg id=${e.target.id}>`
 
-            endGame()
+            endGameLoss()
 
         } else if (tilesArr[e.target.id][e.target.id].mine === false) {
-            
+            tilesArr[e.target.id][e.target.id].isRevealed = true
+            //console.log(e.target.id, tilesArr[e.target.id][e.target.id].isRevealed)
             let adjacentTiles = tilesArr[e.target.id][e.target.id].adjacentTiles
             let adjacentTileMineCount = 0;
 
@@ -154,126 +158,53 @@ document.querySelector('main').addEventListener('click', (e) => {
 
                 let mineValue = (tilesArr[currentId[0]][currentId[0]].mine);
 
-                checkFlood(currentId)
+                floodFill(currentId)
+                
 
             }
-        }
-    }
-})
-function checkFlood(currentIndex) {
-    console.log(`index clicked: ${currentIndex}`)
-    checkAdjacentTilesLeft(currentIndex)
-    checkAdjacentTilesRight(currentIndex)
-    // checkAdjacentTilesUp(currentIndex)
-    // checkAdjacentTilesDown(currentIndex)
-}
-    function checkAdjacentTilesLeft(currentIndex) {
-        //if (currentIndex[0] === '-') {return}
-        const currentNum = parseInt(currentIndex);
-        if (currentNum > 0 && !(currentNum % 10 === 0)){
-            console.log(`left: ${currentNum}`)
-            const leftSquare = (currentNum);
-            adjacentTiles = tilesArr[leftSquare][leftSquare].adjacentTiles
-            adjacentTileMineCount = 0;
-                for (let tile of adjacentTiles) {
-                    if (tilesArr[tile][tile].mine) {
-                        adjacentTileMineCount ++
-                    }
-                }
-                //console.log(`left mine count ${adjacentTileMineCount}`)
-                console.log(`current num: ${currentNum} adjacent mine count: ${adjacentTileMineCount}`)
-                if (adjacentTileMineCount > 0) {
-                    document.getElementById(leftSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${leftSquare}>`
-                    return
-                }
-                checkAdjacentTilesLeft(currentNum - 1)
-                checkAdjacentTilesUp(currentNum - 10)
-                checkAdjacentTilesDown(currentNum + 10)
-        }
-    }
-    function checkAdjacentTilesRight(currentIndex) {
-        //if (currentIndex[0] === '-') {return}
-        const currentNum = parseInt(currentIndex);
-        if (currentNum !== 9 && !(currentNum % 10 === 9)) {
-            console.log(`right: ${currentNum}`)
-            const rightSquare = currentNum;
-            adjacentTiles = tilesArr[rightSquare][rightSquare].adjacentTiles
-            adjacentTileMineCount = 0;
-                for (let tile of adjacentTiles) {
-                    if (tilesArr[tile][tile].mine) {
-                        adjacentTileMineCount ++
-                    }
-                }
-                //console.log(`right mine count ${adjacentTileMineCount}`)
-                if (adjacentTileMineCount > 0) {
-                    document.getElementById(rightSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${rightSquare}>` 
-                    // checkAdjacentTilesUp(currentNum - 10)
-                    // checkAdjacentTilesDown(currentNum + 10)
-                    return
-                }
-                checkAdjacentTilesRight(currentNum + 1)
-                checkAdjacentTilesUp(currentNum - 10)
-                checkAdjacentTilesDown(currentNum + 10)
-        }
-    }
-    function checkAdjacentTilesUp(currentIndex) {
-       // if (currentIndex[0] === '-') {return}
-        const currentNum = parseInt(currentIndex);
-        if (currentNum > 9 && currentNum <= 100) {
-            console.log(`up: ${currentNum}`)
-            const upSquare = currentNum;
-            adjacentTiles = tilesArr[upSquare][upSquare].adjacentTiles
-            adjacentTileMineCount = 0;
-                for (let tile of adjacentTiles) {
-                    if (tilesArr[tile][tile].mine) {
-                        adjacentTileMineCount ++
-                    }
-                }
-                console.log(`up num ${currentNum}`)
-                if (adjacentTileMineCount > 0) {
-                    document.getElementById(upSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${upSquare}>`
-                    // checkAdjacentTilesRight(currentNum + 1)
-                    // checkAdjacentTilesLeft(currentNum - 1)
-                    return
-                }
-                checkAdjacentTilesUp(currentNum - 10)
-                // checkAdjacentTilesRight(currentNum + 1)
-                // checkAdjacentTilesLeft(currentNum - 1)
-        }
-    }
-    function checkAdjacentTilesDown(currentIndex) {
-        //if (currentIndex[0] === '-') {return}
+        }}
+    })
 
-        const currentNum = parseInt(currentIndex);
-        if (currentNum <= 89 && currentNum >= 0) {
-            console.log(`down: ${currentIndex}`)
-            const downSquare = currentNum;
-            //console.log(`down square: ${downSquare}`)
+
+    function floodFill(id) {
+        tilesArr[id][id].isRevealed = true
+        document.getElementById(id).style.backgroundColor = '#EADFF8'
+        console.log(`id: ${id}`)
+        for (let item of tilesArr[id][id].adjacentTiles) {
+            console.log(tilesArr[id][id].adjacentTiles)
+            console.log(`item before: ${item}`)
+            if (!tilesArr[item][item].isRevealed) {
+                console.log(`item: ${item}`)
+                adjacentTiles = tilesArr[item][item].adjacentTiles
+                console.log(adjacentTiles)
+                adjacentTileMineCount = 0;
+                    for (let tile of adjacentTiles) {
+                        
+                        // if (tilesArr[tile][tile].isRevealed){return}
+                        if (tilesArr[tile][tile].mine) {
+                            adjacentTileMineCount ++
+                        }
+                    }
+                    console.log(`mine count: ${adjacentTileMineCount}`)
+                        if (adjacentTileMineCount > 0) {
+                            document.getElementById(item).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${item}>`
+                            tilesArr[item][item].isRevealed = true
+                            console.log(`item is not passed to floodFill: ${item}`)
+                            
+                        } else {
+                            document.getElementById(item).style.backgroundColor = '#EADFF8'
+                            tilesArr[item][item].isRevealed = true
+                            console.log(`item is passed to floodFill: ${item}, ${adjacentTileMineCount}`)
+                        
+                            floodFill(item)
+                        }
+                }
             
-            adjacentTiles = tilesArr[downSquare][downSquare].adjacentTiles
-            adjacentTileMineCount = 0;
-                for (let tile of adjacentTiles) {
-                    if (tilesArr[tile][tile].mine) {
-                        adjacentTileMineCount ++
-                    }
-                }
-                console.log(`down mine count ${adjacentTileMineCount}`)
-                if (adjacentTileMineCount > 0) {
-                    document.getElementById(downSquare).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${downSquare}>`
-                    // checkAdjacentTilesLeft(currentNum - 1)
-                    // checkAdjacentTilesRight(currentNum + 1)
-                    return
-                }
-                checkAdjacentTilesDown(currentNum + 10)
-                // checkAdjacentTilesLeft(currentNum - 1)
-                // checkAdjacentTilesRight(currentNum + 1)
+            }
         }
-    }
+        
 
-
-
-
-function endGame() {
+function endGameLoss() {
     for (let item of tilesArr) {
 
         const key = Object.keys(item)[0];
@@ -302,12 +233,21 @@ function endGame() {
         }
 
     }
+    const footer = document.createElement("p");
+    footer.innerText = "You lose!"
+    document.body.appendChild(footer);
+}
+
+function endGameWin() {
+    const footer = document.createElement("p");
+    footer.innerText = "You win!"
+    document.body.appendChild(footer);
 }
 function initialize() {
 
     minesArr = [];
 
-    while (minesArr.length < 10) {
+    while (minesArr.length < 12) {
 
         let randBombTile
 
@@ -319,13 +259,27 @@ function initialize() {
 
         if (!minesArr.includes(randBombTile)) {
             minesArr.push(randBombTile)
+
         } 
     }  
 
     minesArr.forEach(mine => {
         tilesArr[mine][mine].mine = true
+        tilesArr[mine][mine].isRevealed = true
     })
     console.log(minesArr)
+}
+function checkForWin() {
+    let winArr = [];
+    minesArr.forEach(mine => {
+        console.log(`flag: ${tilesArr[mine][mine].flag}`)
+        if (tilesArr[mine][mine].mine === tilesArr[mine][mine].flag) {
+            winArr.push(true)
+        } else {}
+        if (winArr.length === minesArr.length) {
+            endGameWin()
+        }
+    })
 }
 
 initialize()
