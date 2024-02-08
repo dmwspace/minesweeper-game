@@ -105,16 +105,20 @@ let minesArr = [];
 
 document.querySelector('main').addEventListener('contextmenu', (e) => {
     e.preventDefault()
-    //console.log(e)
+
+    const flagImgPath = './imgs/flag.png';
+    const blankImgPath = './imgs/blank.jpeg';
+
     if (!tilesArr[e.target.id][e.target.id].isRevealed) {
         if (e.target.localName === "div" || e.target.localName === "img") {
             tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
-            console.log(tilesArr[e.target.id][e.target.id].flag)
-            // tilesArr[e.target.id][e.target.id].isRevealed = true
+
             if (tilesArr[e.target.id][e.target.id].flag === true) {
-                const flagImgPath = './imgs/flag.png';
+
                 document.getElementById(e.target.id).innerHTML = `<img src=${flagImgPath} id=${e.target.id}>`
-            } 
+            } else {
+                document.getElementById(e.target.id).innerHTML = `<ing src=${blankImgPath} id=${e.target.id}`
+            }
             checkForWin()
         } 
     }
@@ -184,7 +188,6 @@ document.querySelector('main').addEventListener('click', (e) => {
                             adjacentTileMineCount ++
                         }
                     }
-                    
                         if (adjacentTileMineCount > 0) {
 
                             document.getElementById(item).innerHTML = `<img src=./imgs/${adjacentTileMineCount}.png id=${item}>`
@@ -199,11 +202,8 @@ document.querySelector('main').addEventListener('click', (e) => {
                             floodFill(item)
                         }
                 }
-            
             }
         }
-        
-
 function endGameLoss() {
 
     for (let item of tilesArr) {
@@ -226,7 +226,6 @@ function endGameLoss() {
 
                 if (tilesArr[tile][tile].mine === true) {
                     adjacentTileMineCount ++
-
                 }
             }
             if (adjacentTileMineCount === 0) {
