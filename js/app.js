@@ -102,28 +102,63 @@ const tilesArr = [
 ];
 
 let minesArr = [];
+let flagsNumArr = [];
+let seconds = 0;
+
+function renderTime() {
+    if (seconds > 59) {
+        document.getElementById('seconds').textContent = `${Math.floor(seconds / 60)}:${(seconds % 60) < 10 ? "0" + (seconds % 60) : seconds % 60}`
+    } else {
+        document.getElementById('seconds').textContent = seconds;
+    }
+}
+
+const interval = setInterval(timeKeeper, 1000)
+
+function timeKeeper() {
+    seconds++;
+    renderTime()
+}
+
 
 document.querySelector('main').addEventListener('contextmenu', (e) => {
     e.preventDefault()
 
     const flagImgPath = './imgs/flag.png';
     const blankImgPath = './imgs/blank.jpeg';
-
     if (!tilesArr[e.target.id][e.target.id].isRevealed) {
         if (e.target.localName === "div" || e.target.localName === "img") {
+            
+        if (flagsNumArr.length < 12) {
             tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
-
+            
+            console.log(tilesArr[e.target.id][e.target.id])
             if (tilesArr[e.target.id][e.target.id].flag === true) {
                 document.getElementById(e.target.id).innerHTML = `<img src=${flagImgPath} id=${e.target.id}>`
+                flagsNumArr.push(true)
 
             } else {
-                document.getElementById(e.target.id).innerHTML = `<ing src=${blankImgPath} id=${e.target.id}`
-            
+                document.getElementById(e.target.id).innerHTML = `<img src=${blankImgPath} id=${e.target.id}`
+                flagsNumArr.pop()
             }
+        } else if (flagsNumArr.length === 12) {
+            
+            if (tilesArr[e.target.id][e.target.id].flag === true) {
+                tilesArr[e.target.id][e.target.id].flag = !tilesArr[e.target.id][e.target.id].flag
+                
+                document.getElementById(e.target.id).innerHTML = `<img src=${blankImgPath} id=${e.target.id}`
+                flagsNumArr.pop()
+            } else {}
+        }
+            checkFlagNum()
             checkForWin()
         } 
     }
 })
+
+function checkFlagNum() {
+    document.getElementById('num-flags').textContent = `${flagsNumArr.length}`
+}
 
 document.querySelector('main').addEventListener('click', (e) => {
     e.preventDefault()
@@ -173,7 +208,6 @@ document.querySelector('main').addEventListener('click', (e) => {
         initialize()
     })
 
-
     function floodFill(id) {
         tilesArr[id][id].isRevealed = true
         document.getElementById(id).style.backgroundColor = '#EADFF8'
@@ -197,13 +231,12 @@ document.querySelector('main').addEventListener('click', (e) => {
                     
                 } else {
                     document.getElementById(item).style.backgroundColor = '#EADFF8'
-                    tilesArr[item][item].isRevealed = true                       
+                    tilesArr[item][item].isRevealed = true                      
                     floodFill(item)
                 }
             }
         }
     }
-
 function endGameLoss() {
 
     for (let item of tilesArr) {
@@ -232,11 +265,14 @@ function endGameLoss() {
             }
         }
     }
+    clearInterval(interval)
     document.getElementById("message").innerText = "You lose"
 }
 
 function endGameWin() {
-    document.getElementById("message").innerText = "You win!"    
+    clearInterval(interval)
+    const time = renderTime()
+    document.getElementById("message").innerText = `You win! ${Math.floor(seconds / 60)}:${(seconds % 60) < 10 ? "0" + (seconds % 60) : seconds % 60}`   
 }
 function initialize() {
 
@@ -280,5 +316,4 @@ function checkForWin() {
     })
 }
 
-initialize()
-    
+initialize()   

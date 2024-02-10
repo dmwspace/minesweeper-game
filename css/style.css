@@ -28,6 +28,17 @@ footer > div {
     justify-content: center;
 }
 
+header {
+    height: 100px;
+    border: 1px solid black;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+header > div > p {
+    text-align: center;
+}
+
 div {
     border: 1px solid black
     
@@ -49,3 +60,12 @@ div > img {
 #restart-game {
     cursor: pointer;
 }
+
+
+
+/* #flags > #num-flags {
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+} */
