@@ -5,6 +5,7 @@
 body {
     width: 500px;
     height: 600px;
+    font-family: 'Protest Riot', sans-serif;
 }
 
 main {
@@ -29,18 +30,20 @@ footer > div {
 }
 
 header {
-    height: 100px;
-    border: 1px solid black;
+    height: 120px;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 1fr;
 }
 
-header > div > p {
+header > div {
     text-align: center;
+
 }
 
-div {
-    border: 1px solid black
+main > div {
+    border: 1px solid black;
+    border-radius: 10px
     
 }
 
@@ -56,9 +59,11 @@ div > img {
     font-size: 40px;
     align-items: center;
     justify-content: center;
+    border-radius: 25px;
 }
 #restart-game {
     cursor: pointer;
+    border-radius:25px;
 }
 
 
